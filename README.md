@@ -41,3 +41,5 @@ clog-ai commit # generate commit log and git commit
 ## Azure api
 
 https://portal.azure.com/
+
+可以免费申请 openai 服务
