@@ -7,7 +7,8 @@ import * as path from 'path';
 const configFilePath = '~/.config/clog-ai/config.json';
 
 const param = process.argv[2];
-if (param && param.trim() == 'init') {
+const command = param?.trim();
+if (command == 'init') {
   if (fs.existsSync(configFilePath)) {
     console.log(
       'config file already exists, please edit config file: ' +
@@ -120,6 +121,9 @@ ${diff}
     load.stop();
     load.succeed('Generate commit log success');
     console.log(res);
+    if(command == 'commit'){
+      child_process.execSync(`git commit -m "${res}"`);
+    }
   } catch (e) {
     load.stop();
     load.fail('Generate commit log fail');

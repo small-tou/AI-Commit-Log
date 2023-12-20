@@ -28,5 +28,6 @@ then edit config file:
 ## Run
 
 ```bash
-clog-ai
+clog-ai # generate commit log only
+clog-ai commit # generate commit log and git commit 
 ```
