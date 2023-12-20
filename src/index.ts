@@ -4,6 +4,8 @@ import loading from 'loading-cli';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import readline from 'readline';
+
 
 const homeDir = os.homedir();
 
@@ -76,19 +78,20 @@ const TEMPLACE_CN = `
 
 最终的输出格式：
 <output>
-前缀: 变更的简要中文描述
+前缀: 本次变更的简要描述
 
-* 修改内容的中文描述一
-* 修改内容的中文描述二
+* 修改内容的描述一
+* 修改内容的描述二
 ...
 </output>
 
 其他要求：
+* 使用中文
 * 使用约定的前缀开始你的 commit log
 * 只需要输出一个 commit log 即可
-* 修改内容的中文描述不超过3条
+* 修改内容的描述不超过3条
 
-请按照以上要求直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
+请根据 git diff 的内容，直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
 
 const TEMPLACE_EN = `
 There is the git diff output:
@@ -168,11 +171,26 @@ export default async () => {
     }
     load.stop();
     load.succeed('Generate commit log success');
+    console.log('-------------------')
     console.log(commitLog);
-    if (command == 'commit') {
-      child_process.execSync(`git commit -m "${commitLog}"`);
-      load.succeed('commit success');
-    }
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    console.log('-------------------')
+    rl.question('Submit git commit with the log? (yes/no) ', (answer) => {
+      if (answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y') {
+        child_process.execSync(`git commit -m "${commitLog}"`);
+        load.succeed('commit success');
+      } else {
+      }
+
+      rl.close();
+    });
+
+
   } catch (e) {
     load.stop();
     load.fail('Generate commit log fail');

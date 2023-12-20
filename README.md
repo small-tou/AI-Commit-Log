@@ -41,7 +41,6 @@ then edit config file:
 git add . # git add files
 
 clog-ai  # generate commit log only
-clog-ai commit  # generate commit log and git commit 
 ```
 
 ## Azure api
