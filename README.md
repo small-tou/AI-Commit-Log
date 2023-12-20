@@ -34,12 +34,12 @@ then edit config file:
 ```bash
 git add . # git add files
 
-clog-ai # generate commit log only
-clog-ai commit # generate commit log and git commit 
+clog-ai  # generate commit log only
+clog-ai commit  # generate commit log and git commit 
 ```
 
 ## Azure api
 
 https://portal.azure.com/
 
-可以免费申请 openai 服务
+首先免费申请 openai 服务，然后部署 gpt-3.5-turbo-16k 模型，最终将相关的配置写入配置文件

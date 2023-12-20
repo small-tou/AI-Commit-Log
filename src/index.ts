@@ -3,20 +3,20 @@ import child_process from 'child_process';
 import loading from 'loading-cli';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import * as os from 'os';
 
 const homeDir = os.homedir();
 
-const configFilePath = path.join(homeDir,'.config/clog-ai/config.json');
+const configFilePath = path.join(homeDir, '.config/clog-ai/config.json');
 
 const param = process.argv[2];
 const command = param?.trim();
+
 if (command == 'init') {
   if (fs.existsSync(configFilePath)) {
     console.log(
       'config file already exists, please edit config file: ' +
-        path.resolve(configFilePath)
+      path.resolve(configFilePath)
     );
     process.exit(0);
   }
@@ -48,9 +48,12 @@ if (!fs.existsSync(configFilePath)) {
   process.exit(0);
 }
 
-const config = getConfig() || {
-  language: 'zh',
-};
+const config = getConfig()
+
+if (!config.azure_api_key || !config.azure_deployment_id || !config.azure_base_url || !config.azure_model || !config.azure_api_version) {
+  console.log('please edit config file: ' + path.resolve(configFilePath))
+  process.exit(0);
+}
 
 function getConfig() {
   const content = fs.readFileSync(configFilePath).toString();
@@ -147,12 +150,12 @@ async function gptRequestAzure(prompt: string) {
 
 export default async () => {
   // 执行 git diff，获取变更的文件内容
-  const diff =  child_process
+  const diff = child_process
     .execSync('git diff HEAD')
     .toString()
     .substring(0, 5000);
 
-  const prompt =  (config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN).replace('{{diff}}', diff)
+  const prompt = (config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN).replace('{{diff}}', diff)
   const load = loading({
     text: 'Generating commit log...',
     color: 'yellow',
@@ -164,12 +167,12 @@ export default async () => {
 
     const commitLog = res.match(/<output>([\s\S]*)<\/output>/)?.[1]?.trim();
     if (!commitLog) {
-      throw new Error('Generate commit log fail');
+      throw new Error('No commit log generated');
     }
     load.stop();
     load.succeed('Generate commit log success');
     console.log(commitLog);
-    if(command == 'commit'){
+    if (command == 'commit') {
       child_process.execSync(`git commit -m "${commitLog}"`);
       load.succeed('commit success');
     }
