@@ -1480,6 +1480,17 @@ acorn@^7.1.0, acorn@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+ai-commit-log@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/ai-commit-log/-/ai-commit-log-0.1.0.tgz#38a74bf3aa52b82437b29e9b2f2e033b84de5a66"
+  integrity sha512-h1c+hZ9V7LwYgTOk9j+bSYc6EPHmx2nVyp8nQFVvzcp5qRWjQave+rGtBFY4IhZkt3KyO4cCHbCPGVY92MPlNQ==
+  dependencies:
+    axios "^1.6.2"
+    execa "^8.0.1"
+    loading-cli "^1.1.2"
+    prettier "^3.1.1"
+    tsdx "^0.14.1"
+
 ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
