@@ -73,15 +73,15 @@ const TEMPLACE_CN = `
 <output>
 [前缀]: 变更的简要中文描述
 
-* 修改内容的中文描述
-* 修改内容的中文描述
+* 修改内容的中文描述一
+* 修改内容的中文描述二
 ...
 </output>
 
 其他要求：
 * 使用约定的前缀开始你的 commit log
 * 只需要输出一个 commit log 即可
-* 修改内容的中文描述不超过5条
+* 修改内容的中文描述不超过3条
 
 请按照以上要求直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
 
@@ -114,7 +114,7 @@ The final output format:
 Other requirements:
 * Start your commit log with the agreed prefix
 * Only one commit log is required
-* The description of the modified content does not exceed 5
+* The description of the modified content does not exceed 3
 
 Please give the final commit log directly according to the above requirements, and wrap it in the <output> and </output> tags.`;
 
