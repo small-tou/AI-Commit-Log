@@ -43,6 +43,8 @@ git add . # git add files
 clog-ai  # generate commit log only
 ```
 
+![image](https://github.com/aoao-eth/AI-Commit-Log/assets/897401/36b50dc9-5846-424c-a2da-b5149397e1ba)
+
 ## Azure api
 
 https://portal.azure.com/
