@@ -1,5 +1,5 @@
 {
-  "version": "0.1.9",
+  "version": "0.1.10",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,16 +34,28 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "ai-commit-log",
-  "author": "yutou-air",
-  "module": "dist/ai-commit-log.esm.js",
+  "name": "clog-ai",
+  "author": "yutou",
+  "description": "Generate commit log with AI",
+  "keywords": [
+    "commit",
+    "log",
+    "ai",
+    "clog",
+    "gpt"
+  ],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/aoao-eth/AI-Commit-Log"
+  },
+  "module": "dist/clog-ai.esm.js",
   "size-limit": [
     {
-      "path": "dist/ai-commit-log.cjs.production.min.js",
+      "path": "dist/clog-ai.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/ai-commit-log.esm.js",
+      "path": "dist/clog-ai.esm.js",
       "limit": "10 KB"
     }
   ],

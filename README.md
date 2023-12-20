@@ -1,13 +1,19 @@
 # clog-ai
 
+使用 AI 自动生成 Commit Log
+
+Generate commit log with AI
+
 ## Example
 
 示例可参照本项目的 commit log
 
+You can see the commit log of this project
+
 ## Installation
 
 ```bash
-npm install -g ai-commit-log
+npm install -g clog-ai
 ```
 
 ## Usage
@@ -43,3 +49,5 @@ clog-ai commit  # generate commit log and git commit
 https://portal.azure.com/
 
 首先免费申请 openai 服务，然后部署 gpt-3.5-turbo-16k 模型，最终将相关的配置写入配置文件
+
+First, apply for openai service for free, then deploy the gpt-3.5-turbo-16k model, and finally write the relevant configuration into the configuration file
