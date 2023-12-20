@@ -21,13 +21,15 @@ then edit config file:
   "azure_deployment_id": "xxxx",
   "azure_base_url": "https://xxxxxxx.openai.azure.com",
   "azure_model": "gpt-3.5-turbo-16k",
-  "azure_api_version": "",
+  "azure_api_version": "2023-06-13-preview",
 }
 ```
 
 ## Run
 
 ```bash
+git add . # git add files
+
 clog-ai # generate commit log only
 clog-ai commit # generate commit log and git commit 
 ```

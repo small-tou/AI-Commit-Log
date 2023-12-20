@@ -52,9 +52,16 @@ function getConfig() {
   return JSON.parse(content || '{}');
 }
 
-const TEMPLACE_CN = `你是一个生成 git commit log 的工具，你的名字是 git-commit-log-generator;
+const TEMPLACE_CN = `
+现有以下的 git diff 输出：
+<diff>
+{{diff}}
+</diff>
 
-commit log 前缀类型：
+角色：你是一个根据 git diff 信息生成 git commit log 的工具.
+
+要求：
+以下是 git commit log 的书写前缀及其对应的使用场景：
 * feat：新功能（feature）
 * fix：修补bug
 * docs：文档（documentation）
@@ -63,22 +70,49 @@ commit log 前缀类型：
 * test：增加测试
 * chore：构建过程或辅助工具的变动
 
-以下是 git diff 输出的内容，请为这个内容生成一句中文的 commit log，内容尽量精简，同时表达清楚此次修改的主要变更:`;
+最终的输出格式：
+[前缀]: 变更的简要中文描述
 
-const TEMPLACE_EN = `You are a tool for generating git commit log, your name is git-commit-log-generator;
+* 修改内容的中文描述
+* 修改内容的中文描述
+...
 
-commit log prefix type:
-* feat: new function (feature)
+请按照以上要求直接给出最终的 commit log`;
+
+const TEMPLACE_EN = `
+There is the git diff output:
+<diff>
+{{diff}}
+</diff>
+
+You are a tool to generate git commit log based on git diff information, and your name is ai-commit-log.
+
+Requirements:
+The following is the prefix of git commit log and its corresponding meaning:
+* feat: new feature
 * fix: fix bug
 * docs: documentation
-* style: format (changes that do not affect code execution)
-* refactor: refactoring (code changes that are not new features or bug fixes)
+* style: format (code changes that do not affect the running of the code)
+* refactor: refactoring (code changes that are neither new features nor bug fixes)
 * test: add test
 * chore: changes in the build process or auxiliary tools
 
-The following is the content output by git diff. Please generate a English commit log for this content. The content should be concise and clear about the main changes of this modification:`;
+Other requirements:
+1. Please use the above prefix to start your commit log
+2. The content should be concise, and the core function modification of the local modification should be clearly described
+3. Please use English to describe
 
-async function gptRequestAzureUS16K(prompt: string) {
+The final output format:
+[prefix]: brief description
+
+* Modify content one
+* Modify content two
+...
+
+Please follow the above requirements and generate commit log based on the above git diff output:`;
+
+
+async function gptRequestAzure(prompt: string) {
   const res = await axios.post(
     `${config.azure_base_url}/openai/deployments/${config.azure_deployment_id}/chat/completions?api-version=${config.azure_api_version}`,
     {
@@ -101,14 +135,12 @@ async function gptRequestAzureUS16K(prompt: string) {
 
 export default async () => {
   // 执行 git diff，获取变更的文件内容
-  const diff = await child_process
-    .execSync('git diff')
+  const diff =  child_process
+    .execSync('git diff HEAD')
     .toString()
     .substring(0, 5000);
 
-  const prompt = `${config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN}
-${diff}
-`;
+  const prompt =  (config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN).replace('{{diff}}', diff)
   const load = loading({
     text: 'Generating commit log...',
     color: 'yellow',
@@ -116,17 +148,18 @@ ${diff}
     frames: ['◰', '◳', '◲', '◱'],
   }).start();
   try {
-    const res = await gptRequestAzureUS16K(prompt);
+    const res = await gptRequestAzure(prompt);
 
     load.stop();
     load.succeed('Generate commit log success');
     console.log(res);
     if(command == 'commit'){
+      console.log('commiting...');
       child_process.execSync(`git commit -m "${res}"`);
     }
   } catch (e) {
     load.stop();
     load.fail('Generate commit log fail');
-    console.error(e);
+    console.error(e.message);
   }
 };
