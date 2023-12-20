@@ -60,7 +60,6 @@ const TEMPLACE_CN = `
 
 角色：你是一个根据 git diff 信息生成 git commit log 的工具.
 
-要求：
 以下是 git commit log 的书写前缀及其对应的使用场景：
 * feat：新功能（feature）
 * fix：修补bug
@@ -71,13 +70,20 @@ const TEMPLACE_CN = `
 * chore：构建过程或辅助工具的变动
 
 最终的输出格式：
+<output>
 [前缀]: 变更的简要中文描述
 
 * 修改内容的中文描述
 * 修改内容的中文描述
 ...
+</output>
 
-请按照以上要求直接给出最终的 commit log`;
+其他要求：
+* 使用约定的前缀开始你的 commit log
+* 只需要输出一个 commit log 即可
+* 修改内容的中文描述不超过5条
+
+请按照以上要求直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
 
 const TEMPLACE_EN = `
 There is the git diff output:
@@ -85,10 +91,9 @@ There is the git diff output:
 {{diff}}
 </diff>
 
-You are a tool to generate git commit log based on git diff information, and your name is ai-commit-log.
+Role: You are a tool that generates git commit log based on git diff information.
 
-Requirements:
-The following is the prefix of git commit log and its corresponding meaning:
+The following is the prefix of the git commit log and its corresponding usage scenario:
 * feat: new feature
 * fix: fix bug
 * docs: documentation
@@ -97,19 +102,21 @@ The following is the prefix of git commit log and its corresponding meaning:
 * test: add test
 * chore: changes in the build process or auxiliary tools
 
-Other requirements:
-1. Please use the above prefix to start your commit log
-2. The content should be concise, and the core function modification of the local modification should be clearly described
-3. Please use English to describe
-
 The final output format:
-[prefix]: brief description
+<output>
+[prefix]: brief description of the change
 
-* Modify content one
-* Modify content two
+* description of the modified content
+* description of the modified content
 ...
+</output>
 
-Please follow the above requirements and generate commit log based on the above git diff output:`;
+Other requirements:
+* Start your commit log with the agreed prefix
+* Only one commit log is required
+* The description of the modified content does not exceed 5
+
+Please give the final commit log directly according to the above requirements, and wrap it in the <output> and </output> tags.`;
 
 
 async function gptRequestAzure(prompt: string) {
@@ -150,12 +157,16 @@ export default async () => {
   try {
     const res = await gptRequestAzure(prompt);
 
+    const commitLog = res.match(/<output>([\s\S]*)<\/output>/)?.[1]?.trim();
+    if (!commitLog) {
+      throw new Error('Generate commit log fail');
+    }
     load.stop();
     load.succeed('Generate commit log success');
-    console.log(res);
+    console.log(commitLog);
     if(command == 'commit'){
-      console.log('commiting...');
       child_process.execSync(`git commit -m "${res}"`);
+      console.log('commit success');
     }
   } catch (e) {
     load.stop();
