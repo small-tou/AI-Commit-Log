@@ -28,12 +28,9 @@ if (command == 'init') {
     azure_model: '',
     azure_api_version: '',
   };
-  // 使用 path 模块获取文件的目录路径
   const dirPath = path.dirname(configFilePath);
 
-  // 检查目录是否存在，如果不存在则创建它
   if (!fs.existsSync(dirPath)) {
-    // recursive: true 选项会确保创建所有必需的父目录
     fs.mkdirSync(dirPath, { recursive: true });
   }
   fs.writeFileSync(configFilePath, JSON.stringify(config, null, 2));
@@ -79,7 +76,7 @@ const TEMPLACE_CN = `
 
 最终的输出格式：
 <output>
-[前缀]: 变更的简要中文描述
+前缀: 变更的简要中文描述
 
 * 修改内容的中文描述一
 * 修改内容的中文描述二
