@@ -4,7 +4,11 @@ import loading from 'loading-cli';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const configFilePath = '~/.config/clog-ai/config.json';
+import * as os from 'os';
+
+const homeDir = os.homedir();
+
+const configFilePath = path.join(homeDir,'.config/clog-ai/config.json');
 
 const param = process.argv[2];
 const command = param?.trim();
@@ -41,6 +45,7 @@ if (command == 'init') {
 
 if (!fs.existsSync(configFilePath)) {
   console.log('please run this command first: clog-ai init');
+  process.exit(0);
 }
 
 const config = getConfig() || {
