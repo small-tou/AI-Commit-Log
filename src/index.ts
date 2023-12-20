@@ -166,7 +166,7 @@ export default async () => {
     console.log(commitLog);
     if(command == 'commit'){
       child_process.execSync(`git commit -m "${res}"`);
-      console.log('commit success');
+      load.succeed('commit success');
     }
   } catch (e) {
     load.stop();
