@@ -14,8 +14,9 @@ const homeDir = os.homedir();
 
 const configFilePath = path.join(homeDir, '.config/clog-ai/config.json');
 
-const param = process.argv[2];
-const command = param?.trim();
+const command = process.argv[2]?.trim();
+
+const isVerbose = process.argv.includes('--verbose')||process.argv.includes('-v');
 
 if (command == 'init') {
   if (fs.existsSync(configFilePath)) {
@@ -130,7 +131,7 @@ export default async () => {
   const diff = child_process
     .execSync('git diff HEAD')
     .toString()
-    .substring(0, 5000);
+    .substring(0, 8000);
 
   const prompt = (config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN).replace('{{diff}}', diff)
   const load = loading({
@@ -140,6 +141,10 @@ export default async () => {
     frames: ['◰', '◳', '◲', '◱'],
   }).start();
   try {
+    if (isVerbose) {
+      console.log('--------- Input Prompt ----------');
+      console.log(prompt);
+    }
     const res = config.datasource === 'azure' ? await gptRequestAzure(prompt) : await gptRequestOpenai(prompt);
     const commitLog = res.match(/<output>([\s\S]*)<\/output>/)?.[1]?.trim();
     if (!commitLog) {
