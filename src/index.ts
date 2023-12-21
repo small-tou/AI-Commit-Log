@@ -65,7 +65,7 @@ const TEMPLACE_CN = `
 {{diff}}
 </diff>
 
-角色：你是一个根据 git diff 信息生成 git commit log 的工具.
+角色：你是一个根据 git diff 信息生成 git commit log 的工具，你会为一个复杂的变更生成一条精简的 commit log.
 
 以下是 git commit log 的书写前缀及其对应的使用场景：
 * feat：新功能（feature）
@@ -78,18 +78,15 @@ const TEMPLACE_CN = `
 
 最终的输出格式：
 <output>
-前缀: 本次变更的简要描述
+前缀: 本次所有变更的简要描述
 
-* 修改内容的描述一
-* 修改内容的描述二
-...
+* 具体描述
 </output>
 
-其他要求：
-* 使用中文
-* 使用约定的前缀开始你的 commit log
-* 只需要输出一个 commit log 即可
-* 修改内容的描述不超过3条
+要求：
+* 使用中文输出
+* 如果有多种类型的修改，也强制压缩到一条 commit log 中，挑选出最重要的更改进行描述
+* 描述修改的功能，不描述修改了什么文件，也不描述修改了什么代码
 
 请根据 git diff 的内容，直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
 
