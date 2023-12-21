@@ -43,6 +43,8 @@ then edit config file:
 git add . # git add files
 
 clog-ai  # generate commit log only
+
+clog-ai --verbose # generate with prompt display
 ```
 
 ![image](https://github.com/aoao-eth/AI-Commit-Log/assets/897401/36b50dc9-5846-424c-a2da-b5149397e1ba)
