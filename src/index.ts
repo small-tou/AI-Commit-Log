@@ -48,9 +48,20 @@ if (!fs.existsSync(configFilePath)) {
 }
 
 const config = getConfig()
+//valid_datasource: azure openai
+const valid_datasource = ['azure', 'openai']
+if(!valid_datasource.includes(config.datasource)){
+  console.log('Invalid datasource. Please check the configuration file: ' + path.resolve(configFilePath));
+  process.exit(0);
+}
 
-if (!config.azure_api_key || !config.azure_deployment_id || !config.azure_base_url || !config.azure_model || !config.azure_api_version) {
-  console.log('please edit config file: ' + path.resolve(configFilePath))
+if(config.datasource === 'openai' && (!config.openai_api_key)){
+  console.log('Data source is OpenAI, but the corresponding configuration is missing. Please add it in the configuration file: ' + path.resolve(configFilePath))
+  process.exit(0);
+}
+
+if (config.datasource === 'azure' && (!config.azure_api_key || !config.azure_deployment_id || !config.azure_base_url || !config.azure_model || !config.azure_api_version)) {
+  console.log('Data source is Azure, but the corresponding configuration is missing. Please add it in the configuration file: ' + path.resolve(configFilePath))
   process.exit(0);
 }
 
@@ -145,6 +156,27 @@ async function gptRequestAzure(prompt: string) {
   return res.data.choices[0].message.content;
 }
 
+async function gptRequestOpenai(prompt: string) {
+  const res = await axios.post(
+    `https://api.openai.com/v1/chat/completions`,
+    {
+      model: 'gpt-3.5-turbo-16k',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    },
+    {
+      headers: {
+      Authorization: `Bearer ${config.openai_api_key}`,
+      },
+      timeout: 100000,
+    },
+  );
+  return res.data.choices[0].message.content;
+}
+
 export default async () => {
   // 执行 git diff，获取变更的文件内容
   const diff = child_process
@@ -160,8 +192,7 @@ export default async () => {
     frames: ['◰', '◳', '◲', '◱'],
   }).start();
   try {
-    const res = await gptRequestAzure(prompt);
-
+    const res = config.datasource === 'azure' ? await gptRequestAzure(prompt) : await gptRequestOpenai(prompt);
     const commitLog = res.match(/<output>([\s\S]*)<\/output>/)?.[1]?.trim();
     if (!commitLog) {
       throw new Error('No commit log generated');

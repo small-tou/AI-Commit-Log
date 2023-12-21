@@ -27,6 +27,8 @@ then edit config file:
 ```
 {
   "language": "zh or en",
+  "datasource": "openai or azure",
+  "openai_api_key": "xxxxx",
   "azure_api_key": "xxxxx",
   "azure_deployment_id": "xxxx",
   "azure_base_url": "https://xxxxxxx.openai.azure.com",
@@ -52,3 +54,13 @@ https://portal.azure.com/
 首先免费申请 openai 服务，然后部署 gpt-3.5-turbo-16k 模型，最终将相关的配置写入配置文件
 
 First, apply for openai service for free, then deploy the gpt-3.5-turbo-16k model, and finally write the relevant configuration into the configuration file
+
+## OpenAI api
+
+https://platform.openai.com/api-keys
+
+申请 OpenAI API key，将其写入配置文件中  
+
+Apply for an OpenAI API key and write it into the configuration file.
+
+
