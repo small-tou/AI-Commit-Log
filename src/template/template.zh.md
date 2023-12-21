@@ -12,7 +12,7 @@
 * style： 格式优化
 * refactor：重构代码
 * test：增加测试
-* chore：更改版本或者辅助工具
+* chore：更改版本号或者开发工具配置等
 
 最终的输出格式：
 <output>
