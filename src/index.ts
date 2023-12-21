@@ -106,7 +106,7 @@ async function gptRequestAzure(prompt: string) {
 
 async function gptRequestOpenai(prompt: string) {
   const res = await axios.post(
-    `https://api.openai.com/v1/chat/completions`,
+    `https://${config.openai_api_key||'api.openai.com'}/v1/chat/completions`,
     {
       model: 'gpt-3.5-turbo-16k',
       messages: [{ role: 'user', content: prompt }],
