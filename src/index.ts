@@ -24,6 +24,9 @@ if (command == 'init') {
   }
   const config = {
     language: 'zh',
+    datasource: '',
+    openai_api_key: '',
+    openai_model: '',
     azure_api_key: '',
     azure_deployment_id: '',
     azure_base_url: '',
@@ -163,7 +166,7 @@ async function gptRequestOpenai(prompt: string) {
   const res = await axios.post(
     `https://api.openai.com/v1/chat/completions`,
     {
-      model: 'gpt-3.5-turbo-16k',
+      model: config.openai_model || 'gpt-3.5-turbo-16k',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0,
       top_p: 1,

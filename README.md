@@ -28,6 +28,7 @@ then edit config file:
 {
   "language": "zh or en",
   "datasource": "openai or azure",
+  "openai_model": "gpt-3.5-turbo-16k"
   "openai_api_key": "xxxxx",
   "azure_api_key": "xxxxx",
   "azure_deployment_id": "xxxx",
