@@ -146,6 +146,12 @@ export default async () => {
       console.log(prompt);
     }
     const res = config.datasource === 'azure' ? await gptRequestAzure(prompt) : await gptRequestOpenai(prompt);
+
+    if (isVerbose) {
+      console.log('\n--------- Output ----------');
+      console.log(res);
+      console.log('-------------------');
+    }
     const commitLog = res.match(/<output>([\s\S]*)<\/output>/)?.[1]?.trim();
     if (!commitLog) {
       throw new Error('No commit log generated');
