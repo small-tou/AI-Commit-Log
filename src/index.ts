@@ -5,7 +5,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import readline from 'readline';
-
+//@ts-ignore
+import TEMPLACE_CN from './template/template.zh.md';
+//@ts-ignore
+import TEMPLACE_EN from './template/template.en.md';
 
 const homeDir = os.homedir();
 
@@ -24,6 +27,8 @@ if (command == 'init') {
   }
   const config = {
     language: 'zh',
+    datasource: 'openai',
+    openai_api_key: '',
     azure_api_key: '',
     azure_deployment_id: '',
     azure_base_url: '',
@@ -39,6 +44,8 @@ if (command == 'init') {
   console.log(
     'init success, please edit config file: ' + path.resolve(configFilePath)
   );
+
+
   process.exit(0);
 }
 
@@ -50,6 +57,12 @@ if (!fs.existsSync(configFilePath)) {
 const config = getConfig()
 //valid_datasource: azure openai
 const valid_datasource = ['azure', 'openai']
+
+if(!config.datasource){
+  console.log('Please specify the datasource in the configuration file: ' + path.resolve(configFilePath));
+  process.exit(0);
+}
+
 if(!valid_datasource.includes(config.datasource)){
   console.log('Invalid datasource. Please check the configuration file: ' + path.resolve(configFilePath));
   process.exit(0);
@@ -69,71 +82,6 @@ function getConfig() {
   const content = fs.readFileSync(configFilePath).toString();
   return JSON.parse(content || '{}');
 }
-
-const TEMPLACE_CN = `
-现有以下的 git diff 输出：
-<diff>
-{{diff}}
-</diff>
-
-角色：你是一个根据 git diff 信息生成 git commit log 的工具，你会为一个复杂的变更生成一条精简的 commit log.
-
-以下是 git commit log 的书写前缀及其对应的使用场景：
-* feat：新功能（feature）
-* fix：修补bug
-* docs：文档（documentation）
-* style： 格式（不影响代码运行的变动）
-* refactor：重构（即不是新增功能，也不是修改bug的代码变动）
-* test：增加测试
-* chore：构建过程或辅助工具的变动
-
-最终的输出格式：
-<output>
-前缀: 本次所有变更的简要描述
-
-* 具体描述
-</output>
-
-要求：
-* 使用中文输出
-* 如果有多种类型的修改，也强制压缩到一条 commit log 中，挑选出最重要的更改进行描述
-* 描述修改的功能，不描述修改了什么文件，也不描述修改了什么代码
-
-请根据 git diff 的内容，直接给出最终的 commit log，将其包裹在 <output> 和 </output> 标签中即可`;
-
-const TEMPLACE_EN = `
-There is the git diff output:
-<diff>
-{{diff}}
-</diff>
-
-Role: You are a tool that generates git commit log based on git diff information.
-
-The following is the prefix of the git commit log and its corresponding usage scenario:
-* feat: new feature
-* fix: fix bug
-* docs: documentation
-* style: format (code changes that do not affect the running of the code)
-* refactor: refactoring (code changes that are neither new features nor bug fixes)
-* test: add test
-* chore: changes in the build process or auxiliary tools
-
-The final output format:
-<output>
-[prefix]: brief description of the change
-
-* description of the modified content
-* description of the modified content
-...
-</output>
-
-Other requirements:
-* Start your commit log with the agreed prefix
-* Only one commit log is required
-* The description of the modified content does not exceed 3
-
-Please give the final commit log directly according to the above requirements, and wrap it in the <output> and </output> tags.`;
-
 
 async function gptRequestAzure(prompt: string) {
   const res = await axios.post(
