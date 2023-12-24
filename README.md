@@ -33,7 +33,7 @@ then edit config file:
   "azure_deployment_id": "xxxx",
   "azure_base_url": "https://xxxxxxx.openai.azure.com",
   "azure_model": "gpt-3.5-turbo-16k",
-  "azure_api_version": "2023-07-01-preview",
+  "azure_api_version": "2023-07-01-preview"
 }
 ```
 
