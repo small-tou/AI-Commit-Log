@@ -16,13 +16,13 @@ const configFilePath = path.join(homeDir, '.config/clog-ai/config.json');
 
 const command = process.argv[2]?.trim();
 
-const isVerbose = process.argv.includes('--verbose')||process.argv.includes('-v');
+const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
 
 if (command == 'init') {
   if (fs.existsSync(configFilePath)) {
     console.log(
       'config file already exists, please edit config file: ' +
-      path.resolve(configFilePath)
+        path.resolve(configFilePath)
     );
     process.exit(0);
   }
@@ -30,6 +30,8 @@ if (command == 'init') {
     language: 'zh',
     datasource: 'openai',
     openai_api_key: '',
+    openai_base_url: 'https://api.openai.com',
+    openai_model: 'gpt-3.5-turbo-16k',
     azure_api_key: '',
     azure_deployment_id: '',
     azure_base_url: '',
@@ -45,7 +47,6 @@ if (command == 'init') {
   console.log(
     'init success, please edit config file: ' + path.resolve(configFilePath)
   );
-
 
   process.exit(0);
 }
@@ -106,10 +107,13 @@ async function gptRequestAzure(prompt: string) {
 }
 
 async function gptRequestOpenai(prompt: string) {
+  const openai_base_url = config.openai_base_url || 'https://api.openai.com';
+  const openai_model = config.openai_model || 'gpt-3.5-turbo-16k';
+
   const res = await axios.post(
-    `https://api.openai.com/v1/chat/completions`,
+    `${openai_base_url}/v1/chat/completions`,
     {
-      model: 'gpt-3.5-turbo-16k',
+      model: openai_model,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0,
       top_p: 1,
@@ -118,10 +122,10 @@ async function gptRequestOpenai(prompt: string) {
     },
     {
       headers: {
-      Authorization: `Bearer ${config.openai_api_key}`,
+        Authorization: `Bearer ${config.openai_api_key}`,
       },
       timeout: 100000,
-    },
+    }
   );
   return res.data.choices[0].message.content;
 }
@@ -158,15 +162,15 @@ export default async () => {
     }
     load.stop();
     load.succeed('Generate commit log success');
-    console.log('-------------------')
+    console.log('-------------------');
     console.log(commitLog);
 
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
 
-    console.log('-------------------')
+    console.log('-------------------');
     rl.question('Submit git commit with the log? (yes/no) ', (answer) => {
       if (answer.toLowerCase() === 'yes' || answer.toLowerCase() === 'y') {
         child_process.execSync(`git commit -m "${commitLog}"`);
@@ -176,8 +180,6 @@ export default async () => {
 
       rl.close();
     });
-
-
   } catch (e) {
     load.stop();
     load.fail('Generate commit log fail');
