@@ -17,6 +17,7 @@ const configFilePath = path.join(homeDir, '.config/clog-ai/config.json');
 const command = process.argv[2]?.trim();
 
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
+const isCached = process.argv.includes('--cached') || process.argv.includes('-c');
 
 if (command == 'init') {
   if (fs.existsSync(configFilePath)) {
@@ -56,9 +57,9 @@ if (!fs.existsSync(configFilePath)) {
   process.exit(0);
 }
 
-const config = getConfig()
+const config = getConfig();
 //valid_datasource: azure openai
-const valid_datasource = ['azure', 'openai']
+const valid_datasource = ['azure', 'openai'];
 
 if(!config.datasource){
   console.log('Please specify the datasource in the configuration file: ' + path.resolve(configFilePath));
@@ -133,9 +134,14 @@ async function gptRequestOpenai(prompt: string) {
 export default async () => {
   // 执行 git diff，获取变更的文件内容
   const diff = child_process
-    .execSync('git diff HEAD')
+    .execSync(`git diff ${isCached ? '--cached' : 'HEAD'}`)
     .toString()
     .substring(0, 8000);
+
+  if (!diff) {
+    console.log('No changes detected');
+    process.exit(0);
+  }
 
   const prompt = (config.language == 'zh' ? TEMPLACE_CN : TEMPLACE_EN).replace('{{diff}}', diff)
   const load = loading({
