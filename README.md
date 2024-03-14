@@ -29,6 +29,8 @@ then edit config file:
   "language": "zh or en",
   "datasource": "openai or azure",
   "openai_api_key": "xxxxx",
+  "openai_base_url": "https://api.openai.com'",
+  "openai_model": "gpt-3.5-turbo-16k",
   "azure_api_key": "xxxxx",
   "azure_deployment_id": "xxxx",
   "azure_base_url": "https://xxxxxxx.openai.azure.com",
@@ -45,6 +47,8 @@ git add . # git add files
 clog-ai  # generate commit log only
 
 clog-ai --verbose # generate with prompt display
+
+clog-ai --cached # diff cached changes detected
 ```
 
 ![image](https://github.com/aoao-eth/AI-Commit-Log/assets/897401/36b50dc9-5846-424c-a2da-b5149397e1ba)
